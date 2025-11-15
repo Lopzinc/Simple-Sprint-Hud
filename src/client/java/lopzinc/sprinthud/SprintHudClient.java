@@ -47,7 +47,7 @@ public class SprintHudClient implements ClientModInitializer {
                 drawContext.drawText(client.textRenderer, hudText, config.x, config.y, 0xFFFFFFFF, true);
             }
         };
-        Identifier SprintHudID = Identifier.of("modid", "sprint_hud"); //no idea why this works
+        Identifier SprintHudID = Identifier.of("modid", "sprint_hud");
         HudElementRegistry.addLast(SprintHudID,SprintHud);
 		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
 			dispatcher.register(
