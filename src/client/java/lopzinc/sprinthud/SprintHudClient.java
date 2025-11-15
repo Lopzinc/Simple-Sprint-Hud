@@ -49,13 +49,13 @@ public class SprintHudClient implements ClientModInitializer {
         };
         Identifier SprintHudID = Identifier.of("modid", "sprint_hud");
         HudElementRegistry.addLast(SprintHudID,SprintHud);
-
 		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
 			dispatcher.register(
 					ClientCommandManager.literal("sprint")
 							.then(ClientCommandManager.literal("move")
 									.then(ClientCommandManager.argument("coords (x,y)", StringArgumentType.greedyString())
 											.executes(context -> {
+                                                assert client.player != null;
 												String coordinates = StringArgumentType.getString(context, "coords (x,y)");
 												Pattern pattern = Pattern.compile("^\\d+,\\d+$");
 												Matcher m = pattern.matcher(coordinates);
@@ -74,6 +74,7 @@ public class SprintHudClient implements ClientModInitializer {
 							)
 							.then(ClientCommandManager.literal("toggleHud")
 									.executes(context -> {
+                                        assert client.player != null;
 										config.hudEnabled = !config.hudEnabled;
 										configLoader.saveConfig(config);
 										client.player.sendMessage(Text.literal("§8[§3Sprint§8] §7Toggled sprint hud " + (config.hudEnabled ? "§aon" : "§coff") + "§7."),false);
@@ -82,6 +83,7 @@ public class SprintHudClient implements ClientModInitializer {
 							.then(ClientCommandManager.literal("format")
 									.then(ClientCommandManager.argument("%status% to write on/off, && for colour code.", StringArgumentType.greedyString())
 											.executes(context -> {
+                                                assert client.player != null;
 												String input = StringArgumentType.getString(context, "%status% to write on/off, && for colour code.");
 												if (input.contains("%status%")) {
 													config.format = input;
@@ -96,6 +98,7 @@ public class SprintHudClient implements ClientModInitializer {
 							)
 							.then(ClientCommandManager.literal("toggleModeDisplay")
 									.executes(context -> {
+                                        assert client.player != null;
 										config.modeDisplay = !config.modeDisplay;
 										configLoader.saveConfig(config);
 										client.player.sendMessage(Text.literal("§8[§3Sprint§8] §7Mode display set to " + (config.modeDisplay ? ("§aON") : ("§cOFF")) + "§7."),false);
