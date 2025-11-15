@@ -8,9 +8,7 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.client.render.RenderTickCounter;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElement;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.minecraft.text.Text;
@@ -26,26 +24,27 @@ public class SprintHudClient implements ClientModInitializer {
 	public void onInitializeClient() {
 		Config config = configLoader.loadConfig();
 		MinecraftClient client = MinecraftClient.getInstance();
-        HudElement SprintHud = new HudElement() {
-            @Override
-            public void render(DrawContext drawContext, RenderTickCounter tickCounter) {
-                ClientPlayerEntity player = client.player;
-                if (config.hudEnabled && player != null) {
-                    boolean sprinting = false;
-                    String mode = null;
-                    boolean holdMode = client.options.getSprintToggled().getValue();
-                    boolean isSprinting = player.isSprinting();
-                    boolean keyDown = client.options.sprintKey.isPressed();
-                    if (holdMode && (keyDown | isSprinting)) {// if toggled
-                        sprinting = true;
-                        if (config.modeDisplay) { mode = "Toggled"; }
-                    } else if (isSprinting | keyDown){//holding mode
-                        if (config.modeDisplay) { mode = "Holding"; }
-                        sprinting = true;
+        HudElement SprintHud = (drawContext, tickCounter) -> {
+            ClientPlayerEntity player = client.player;
+            if (config.hudEnabled && player != null) {
+                boolean sprinting = false;
+                String mode = null;
+                boolean holdMode = client.options.getSprintToggled().getValue();
+                boolean isSprinting = player.isSprinting();
+                boolean keyDown = client.options.sprintKey.isPressed();
+                if (holdMode && (keyDown | isSprinting)) {// if toggled
+                    sprinting = true;
+                    if (config.modeDisplay) {
+                        mode = "Toggled";
                     }
-                    String hudText = config.format.replaceAll("&&","§").replaceAll("%status%",((sprinting ? "§aON" : "§cOFF") + (mode!=null ? " (" + mode + ")" : "")));
-                    drawContext.drawText(client.textRenderer, hudText, config.x, config.y, 0xFFFFFFFF, true);
+                } else if (isSprinting | keyDown) {//holding mode
+                    if (config.modeDisplay) {
+                        mode = "Holding";
+                    }
+                    sprinting = true;
                 }
+                String hudText = config.format.replaceAll("&&", "§").replaceAll("%status%", ((sprinting ? "§aON" : "§cOFF") + (mode != null ? " (" + mode + ")" : "")));
+                drawContext.drawText(client.textRenderer, hudText, config.x, config.y, 0xFFFFFFFF, true);
             }
         };
         Identifier SprintHudID = Identifier.of("modid", "sprint_hud");
