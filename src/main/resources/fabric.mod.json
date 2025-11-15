@@ -1,0 +1,24 @@
+{
+	"schemaVersion": 1,
+	"id": "sprinthud",
+	"version": "${version}",
+	"name": "Simple Sprint Hud",
+	"description": "Simple Sprint Hud by lopzinc!",
+	"authors": [
+		"lopzinc"
+	],
+	"license": "CC0-1.0",
+	"icon": "assets/sprinthud/icon.png",
+	"environment": "client",
+	"entrypoints": {
+		"client": [
+			"lopzinc.sprinthud.SprintHudClient"
+		]
+	},
+	"depends": {
+		"fabricloader": ">=0.16.14",
+		"minecraft": "~1.21",
+		"java": ">=21",
+		"fabric-api": "*"
+	}
+}
